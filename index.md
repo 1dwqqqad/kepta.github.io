@@ -4,17 +4,17 @@ lang: ru
 ---
 
 <!--
-  Черновик к публикации владельцем (решение владельца 22 октября 2026, K6). Текст описывает поведение приложения на
-  22 октября 2026 (версия телефона на Kotlin): что хранится, что и куда уходит, какие разрешения и зачем. Для GitHub Pages
-  файл кладётся в публичный репозиторий как `index.md` — заголовок выше Jekyll понимает сам. Опубликованный адрес
-  владелец присылает исполнителю: строка «Конфиденциальность» в настройках появляется, когда адрес записан в ресурс
-  `about_privacy_url`. Перед публикацией вписать дату в строку «Действует с». Всякая перемена в поведении приложения,
-  о которой здесь сказано, — правка этой страницы в тот же день.
+  Текст к публикации владельцем (решение владельца 22 октября 2026, K6). Описывает поведение приложения на 23 октября 2026
+  (версия телефона на Kotlin): что хранится, что и куда уходит, какие разрешения и зачем. Для GitHub Pages файл кладётся в
+  публичный репозиторий как `index.md` — заголовок выше Jekyll понимает сам. Опубликовано владельцем 23 октября 2026:
+  https://1dwqqqad.github.io/kepta.github.io/ — адрес записан в ресурс `about_privacy_url`, и строка «Конфиденциальность» в
+  настройках ведёт туда. Перед публикацией вписать дату в строку «Действует с». Всякая перемена в поведении приложения,
+  о которой здесь сказано, — правка этой страницы в тот же день и новая публикация (23 октября 2026: файл Kepta без места).
 -->
 
 # Kepta — политика конфиденциальности
 
-**Действует с:** _дата публикации_
+**Действует с:** 23 октября 2026
 **Разработчик:** Aleksei Vlasov
 **Почта для вопросов:** [keptatodo@gmail.com](mailto:keptatodo@gmail.com)
 
@@ -47,7 +47,7 @@ Kepta — приложение для быстрых записей: задач,
 ### Отправка записи другому человеку — только по вашей команде
 
 Когда вы выбираете «Поделиться», запись уходит в то приложение, которое вы выберете, — текстом или файлом Kepta. Файл
-Kepta несёт копию записи без обсуждения, соавторов, снимков и звука. Полученный файл Kepta добавляется к вам только после
+Kepta несёт копию записи без обсуждения, соавторов, места, снимков и звука. Полученный файл Kepta добавляется к вам только после
 вашего подтверждения.
 
 ### Больше никуда
@@ -91,7 +91,7 @@ Kepta не предназначено специально для детей и 
 
 # Kepta — Privacy Policy
 
-**Effective:** _publication date_
+**Effective:** October 23, 2026
 **Developer:** Aleksei Vlasov
 **Contact:** [keptatodo@gmail.com](mailto:keptatodo@gmail.com)
 
@@ -124,7 +124,7 @@ none of this is sent. Without a connection, a recording waits on the phone and i
 ### Sending a record to another person — only on your command
 
 When you choose "Share", the record goes to the app you pick — as text or as a Kepta file. A Kepta file carries a copy of
-the record without comments, collaborators, photos or audio. A received Kepta file is added only after you confirm.
+the record without comments, collaborators, location, photos or audio. A received Kepta file is added only after you confirm.
 
 ### Nowhere else
 
