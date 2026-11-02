@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>KepKep · Вход</title>
+<!--
+  KepKep sign-in, published as signin/index.html on the GitHub Pages site. The email button leads here with the
+  sign-in link in the fragment (#), which never reaches the server of the site.
+
+  Why a page between the email and the sign-in link: mail scanners open links on their own, and opening the sign-in
+  link spends it together with the code of the same letter (local stack, 1 November 2026). This page opens the link
+  only by a tap. It opens nothing but a Supabase sign-in link (https, *.supabase.co, /auth/v1/verify): any other
+  address in the fragment is refused, so the page cannot be used to send people elsewhere.
+
+  No scripts from elsewhere, no counters, no cookies.
+-->
+<style>
+  :root { --bg: #f5f2ec; --card: #ffffff; --ink: #24211e; --soft: #6f6862; --accent: #2f5fc4; --on: #ffffff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #141311; --card: #201e1b; --ink: #ece7e1; --soft: #a59d96; --accent: #7d9ff0; --on: #10131c; }
+  }
+  html, body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  main { max-width: 440px; margin: 0 auto; padding: 32px 16px; }
+  .card { background: var(--card); border-radius: 16px; padding: 28px 24px; }
+  h1 { margin: 0 0 4px; font-size: 20px; line-height: 26px; font-weight: 600; }
+  p { margin: 0; font-size: 15px; line-height: 22px; }
+  .en { color: var(--soft); font-size: 13px; line-height: 20px; margin-bottom: 16px; }
+  button { display: block; width: 100%; margin: 8px 0 20px; padding: 14px 20px; border: 0; border-radius: 12px;
+    background: var(--accent); color: var(--on); font: inherit; font-size: 16px; line-height: 20px; cursor: pointer; }
+  button[hidden], .bad[hidden] { display: none; }
+  .note { color: var(--soft); font-size: 13px; line-height: 19px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>Вход в KepKep</h1>
+    <p class="en">Sign in to KepKep</p>
+
+    <div id="ok">
+      <p>Нажмите кнопку на телефоне, где просили код: KepKep откроется уже с входом.</p>
+      <p class="en">Tap the button on the phone that asked for the code: KepKep will open signed in.</p>
+      <button id="go" type="button">Войти · Sign in</button>
+    </div>
+
+    <div id="bad" class="bad" hidden>
+      <p>Ссылка неполная. Откройте письмо заново или введите код из него в приложении.</p>
+      <p class="en">The link is incomplete. Open the email again or enter its code in the app.</p>
+    </div>
+
+    <p class="note">Если кнопка не помогла, введите в приложении код из письма. Страница ничего не хранит.</p>
+    <p class="note">If the button did not help, enter the code from the email in the app. This page stores nothing.</p>
+  </div>
+</main>
+<script>
+  (function () {
+    var raw = location.hash.slice(1);
+    if (/^https%3A/i.test(raw)) {
+      try { raw = decodeURIComponent(raw); } catch (e) { raw = ''; }
+    }
+    var target = null;
+    try {
+      var url = new URL(raw);
+      var host = url.hostname.toLowerCase();
+      if (url.protocol === 'https:' && /\.supabase\.co$/.test(host) && url.pathname === '/auth/v1/verify') target = url.href;
+    } catch (e) { target = null; }
+
+    if (!target) {
+      document.getElementById('ok').hidden = true;
+      document.getElementById('bad').hidden = false;
+      return;
+    }
+    document.getElementById('go').addEventListener('click', function () { location.href = target; });
+  })();
+</script>
+</body>
+</html>
