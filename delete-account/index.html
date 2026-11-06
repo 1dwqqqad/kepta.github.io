@@ -116,7 +116,6 @@
       sending: "Отправка…",
       deleting: "Удаление…",
       badMail: "Это не похоже на почту.",
-      tooSoon: "Письмо уже ушло меньше минуты назад — проверьте почту или подождите.",
       noNet: "Нет связи с сервером — проверьте сеть и попробуйте снова.",
       wrongCode: "Код не подошёл — проверьте его или получите новый.",
       later: "Сейчас не вышло, учётная запись цела. Попробуйте позже.",
@@ -138,7 +137,6 @@
       sending: "Sending…",
       deleting: "Deleting…",
       badMail: "This doesn't look like an email address.",
-      tooSoon: "An email was sent less than a minute ago — check your inbox or wait a moment.",
       noNet: "Can't reach the server — check your connection and try again.",
       wrongCode: "The code didn't work — check it or get a new one.",
       later: "That didn't work, and the account is untouched. Please try again later.",
@@ -148,6 +146,9 @@
 
   var lang = (navigator.language || "en").toLowerCase().indexOf("ru") === 0 ? "ru" : "en";
   var mail = "";
+  // Токен, полученный за код. Повтор после потерянного ответа идёт с ним, а не с кодом: код уже потрачен, и повтор с ним
+  // сказал бы «код не подошёл» об учётной записи, которая уже удалена (функция отвечает таким «удалено»).
+  var token = null;
   var $ = function (id) { return document.getElementById(id); };
 
   function t(name) { return WORDS[lang][name]; }
@@ -198,11 +199,12 @@
     var go = $("mail-go");
     busy(go, "sending");
     say("");
-    // Письмо — без заведения новой учётной записи: страница удаления новых людей не заводит. Отказ «такой почты нет»
-    // странице не виден: тот же шаг кода, иначе по ответу узнавали бы, чья почта зарегистрирована.
-    ask("/auth/v1/otp", { email: to, create_user: false }).then(function (r) {
-      if (r.status === 429) { say("tooSoon", true); }
+    // Письмо — без заведения новой учётной записи: страница удаления новых людей не заводит. Ответ сервера странице не
+    // виден — ни «такой почты нет», ни «рано» (его получает только зарегистрированная почта): тот же шаг кода, иначе по
+    // ответу узнавали бы, чья почта зарегистрирована. Письмо, ушедшее меньше минуты назад, несёт годный код.
+    ask("/auth/v1/otp", { email: to, create_user: false }).then(function () {
       mail = to;
+      token = null;
       $("mail-step").hidden = true;
       $("code-step").hidden = false;
       $("code").focus();
@@ -220,6 +222,7 @@
   });
 
   $("other").addEventListener("click", function () {
+    token = null;
     $("code").value = "";
     $("code-go").disabled = true;
     $("code-step").hidden = true;
@@ -236,12 +239,17 @@
     var go = $("code-go");
     busy(go, "deleting");
     say("");
-    ask("/auth/v1/verify", { type: "email", email: mail, token: code }).then(function (r) {
-      if (!r.ok) throw { word: r.status >= 500 ? "later" : "wrongCode" };
-      return r.json();
-    }).then(function (session) {
-      if (!session || !session.access_token) throw { word: "wrongCode" };
-      return ask("/functions/v1/delete-account", {}, session.access_token);
+    var signed = token ? Promise.resolve(token) : ask("/auth/v1/verify", { type: "email", email: mail, token: code })
+      .then(function (r) {
+        if (!r.ok) throw { word: r.status >= 500 ? "later" : "wrongCode" };
+        return r.json();
+      }).then(function (session) {
+        if (!session || !session.access_token) throw { word: "wrongCode" };
+        token = session.access_token;
+        return token;
+      });
+    signed.then(function (bearer) {
+      return ask("/functions/v1/delete-account", {}, bearer);
     }).then(function (r) {
       if (r.status === 401) throw { word: "wrongCode" };
       if (!r.ok) throw { word: "later" };
